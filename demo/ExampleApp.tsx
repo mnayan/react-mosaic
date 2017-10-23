@@ -28,8 +28,7 @@ import {
   MosaicDirection,
   MosaicNode,
   MosaicParent,
-  MosaicWindow,
-  MosaicZeroState,
+  MosaicWindow,  
   updateTree,
 } from '../src/index';
 import '../styles/index.less';
@@ -66,6 +65,8 @@ export class NumberMosaic extends Mosaic<number> {
 export class NumberMosaicWindow extends MosaicWindow<number> {
 }
 
+class ElementMosaic extends Mosaic<number> { }
+
 export class ExampleApp extends React.PureComponent<{}, ExampleAppState> {
   state: ExampleAppState = {
     currentNode: createBalancedTreeFromLeaves(_.range(1, windowCount + 1)),
@@ -76,7 +77,24 @@ export class ExampleApp extends React.PureComponent<{}, ExampleAppState> {
     return (
       <div className='react-mosaic-example-app'>
         {this.renderNavBar()}
-        <NumberMosaic
+        <ElementMosaic
+          renderTile={(count, path) => (
+            <NumberMosaicWindow
+              additionalControls={count === 3 ? additionalControls : EMPTY_ARRAY}
+              title={`Window ${count}`}
+              createNode={this.createNode}
+              path={path}
+            >
+              <div className='example-window'>
+                <h1>{`Window ${count}`}</h1>
+              </div>
+            </NumberMosaicWindow>
+          )}
+          value={this.state.currentNode}
+          onChange={this.onChange}
+          resize={{minimumPaneSizePercentage: 0}}
+        />
+        {/* <NumberMosaic
           renderTile={(count, path) => (
             <NumberMosaicWindow
               additionalControls={count === 3 ? additionalControls : EMPTY_ARRAY}
@@ -93,7 +111,7 @@ export class ExampleApp extends React.PureComponent<{}, ExampleAppState> {
           value={this.state.currentNode}
           onChange={this.onChange}
           className={THEMES[this.state.currentTheme]}
-        />
+        /> */}
       </div>
     );
   }
